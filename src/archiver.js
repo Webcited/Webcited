@@ -2,6 +2,11 @@ const archiver = require("archiver");
 const path = require("path");
 const fs = require("fs");
 
+/**
+ * This function implements the archival 
+ * @param {string} url 
+ * @param {*} res 
+ */
 module.exports = (url, res) => {
   var output = fs.createWriteStream(`./download/zips/${url}.zip`);
   var archive = archiver("zip", {
@@ -24,11 +29,12 @@ module.exports = (url, res) => {
     if (err.code === "ENOENT") {
       console.log(err);
     } else {
-      throw err;
+      console.log(err);
     }
   });
   archive.on("error", function (err) {
     console.log(err);
+    res.status(500);
   });
 
   archive.pipe(output);

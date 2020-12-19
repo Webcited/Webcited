@@ -1,25 +1,47 @@
+/**
+ * Starting point of application.
+ * Creates the expressjs instance
+ * Defines the HTTP API routes
+ */
+
+
 const express = require("express");
 const bodyParser = require("body-parser");
-const scraper = require("./src/scraper");
 const fs = require("fs");
-const nodemailer = require("nodemailer");
+const morgan = require("morgan");
+const mailchimp = require("mailchimp_transactional")(
+  "58d0278a32c3b292f8543d8b35cb8934"
+);
+
+const scraper = require("./src/scraper");
+const reCaptchaVerify = require("./src/reCaptchaVerify");
+
 const app = express();
+
+/**
+ * Object for reCaptcha configuration
+ * @type {Object}
+ */
+const reCaptchaConfig = {
+  secret: "6LftxQkaAAAAAORw98jHn24SCHt_eiWsrZvtoM5d",
+};
 
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
-// Email configuration
+/**
+ * Email configuration
+ * 
+ */
 const mailOptions = {
-  host: "smtp.webcited.co",
-  port: 587,
-  secure: false,
+  host: "mail.webcited.co",
   auth: {
-    user: "username",
-    pass: "password",
+    user: "dev@webcited.co",
+    pass: "Teamwebcited",
   },
 };
-const transporter = nodemailer.createTransport(mailOptions);
 
-fs.access("./download", (err) => { // Check if downloads folder exists
+fs.access("./download", (err) => {
+  // Check if downloads folder exists
   if (err) {
     const errHandler = (err) => {
       if (err) console.log(err);
@@ -30,22 +52,22 @@ fs.access("./download", (err) => { // Check if downloads folder exists
 });
 
 app.use(express.static("public")); // Serve static assets from public directory
+app.use(morgan("combined"));
 
-app.post("/", urlencodedParser, (req, res) => { // HTTP POST at /
+app.post("/", urlencodedParser, (req, res) => {
+  // HTTP POST at /
 
+  let reCaptchaResult;
+  reCaptchaVerify(reCaptchaConfig, req.body["g-recaptcha-response"]).then(
+    (x) => {
+      reCaptchaResult = x;
+    }
+  );
+
+  console.log(reCaptchaResult);
   scraper(req, res); // Call scraper function
-
-  // Create the email
-  let message = {
-    from: "sender@webcited.co",
-    to: "squad@webcited.co",
-    subject: "Submission recieved",
-    text: `name: ${req.body.name},
-    email: ${req.body.EMAIL},
-    Site URL: ${req.body.SiteUrlToExport},
-    Status: ${req.body.Status}`,
-  };
-  transporter.sendMail(message).catch((err) => console.log(err)); // Send email
+  
+  
 });
 
 app.listen(4000);

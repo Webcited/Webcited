@@ -4,9 +4,20 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@mailchimp/mailchimp_transactional": "^1.0.19",
     "archiver": "^5.1.0",
+    "axios": "^0.21.0",
     "body-parser": "^1.19.0",
+    "csurf": "^1.11.0",
     "express": "^4.17.1",
+    "morgan": "^1.10.0",
     "nodemailer": "^6.4.16"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "doc": "jsdoc -d docs --configure jsconf.json main.js"
+  },
+  "devDependencies": {
+    "jsdoc": "^3.6.6"
   }
 }
