@@ -2,14 +2,17 @@ const archiver = require("./archiver");
 const exec = require("child_process").exec;
 const fs = require("fs");
 const path = require("path");
+const sheets = require("./sheets");
 
 /**
  * This function implements the web scraper feature
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  */
 module.exports = (req, res) => {
   let requrl = req.body.SiteUrlToExport;
+  sheets(req).catch((e) => console.log(e));
+
   fs.access(`./download/zips/${requrl}.zip`, (err) => {
     // Check if zip of the requested site already exists, if it does send the existing one
     if (err) {

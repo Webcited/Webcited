@@ -1,3 +1,7 @@
 node_modules
 download
 docs
+prisma/migrations
+credentials.json
+spreadsheetId.json
+.env

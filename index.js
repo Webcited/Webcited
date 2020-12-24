@@ -4,17 +4,14 @@
  * Defines the HTTP API routes
  */
 
-
 const express = require("express");
 const bodyParser = require("body-parser");
 const fs = require("fs");
+const path = require("path");
 const morgan = require("morgan");
-const mailchimp = require("mailchimp_transactional")(
-  "58d0278a32c3b292f8543d8b35cb8934"
-);
+const cors = require("cors");
 
 const scraper = require("./src/scraper");
-const reCaptchaVerify = require("./src/reCaptchaVerify");
 
 const app = express();
 
@@ -30,7 +27,7 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 /**
  * Email configuration
- * 
+ *
  */
 const mailOptions = {
   host: "mail.webcited.co",
@@ -51,23 +48,23 @@ fs.access("./download", (err) => {
   }
 });
 
+app.use(cors());
 app.use(express.static("public")); // Serve static assets from public directory
 app.use(morgan("combined"));
 
 app.post("/", urlencodedParser, (req, res) => {
   // HTTP POST at /
-
-  let reCaptchaResult;
-  reCaptchaVerify(reCaptchaConfig, req.body["g-recaptcha-response"]).then(
-    (x) => {
-      reCaptchaResult = x;
-    }
+  req.body.SiteUrlToExport = req.body.SiteUrlToExport.replace(
+    /(^\w+:|^)\/\//,
+    ""
   );
-
-  console.log(reCaptchaResult);
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename=${req.body.SiteUrlToExport}.zip`
+  );
   scraper(req, res); // Call scraper function
-  
-  
 });
+
+app.use((_, res) => res.status(404).sendFile(path.resolve("public/404.html")));
 
 app.listen(4000);
