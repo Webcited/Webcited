@@ -54,10 +54,8 @@ app.use(morgan("combined"));
 
 app.post("/", urlencodedParser, (req, res) => {
   // HTTP POST at /
-  req.body.SiteUrlToExport = req.body.SiteUrlToExport.replace(
-    /(^\w+:|^)\/\//,
-    ""
-  );
+  const url=new URL(req.body.SiteUrlToExport)
+  req.body.SiteUrlToExport = url.hostname;
   res.setHeader(
     "Content-Disposition",
     `attachment; filename=${req.body.SiteUrlToExport}.zip`
