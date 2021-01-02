@@ -65,4 +65,4 @@ app.post("/", urlencodedParser, (req, res) => {
 
 app.use((_, res) => res.status(404).sendFile(path.resolve("public/404.html")));
 
-app.listen(4000);
+app.listen(process.env.PORT || 4000);
