@@ -3,9 +3,7 @@ const path = require("path");
 const fs = require("fs");
 const creds = require("../credentials.json");
 
-const spreadsheetId = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "../spreadsheetId.json"))
-);
+const spreadsheetId = process.env.SHEET;
 
 const doc = new GoogleSpreadsheet(spreadsheetId);
 let firstSheet;
