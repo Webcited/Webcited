@@ -7,7 +7,7 @@ const spreadsheetId = process.env.SHEET;
 const doc = new GoogleSpreadsheet(spreadsheetId);
 let firstSheet;
 (async function () {
-  await doc.useServiceAccountAuth(process.env.CREDS);
+  await doc.useServiceAccountAuth(JSON.parse(process.env.CREDS));
   await doc.loadInfo();
   firstSheet = doc.sheetsByIndex[0];
 })();
