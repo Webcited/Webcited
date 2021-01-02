@@ -1,14 +1,13 @@
 const { GoogleSpreadsheet } = require("google-spreadsheet");
 const path = require("path");
 const fs = require("fs");
-const creds = require("../credentials.json");
 
 const spreadsheetId = process.env.SHEET;
 
 const doc = new GoogleSpreadsheet(spreadsheetId);
 let firstSheet;
 (async function () {
-  await doc.useServiceAccountAuth(creds);
+  await doc.useServiceAccountAuth(process.env.CREDS);
   await doc.loadInfo();
   firstSheet = doc.sheetsByIndex[0];
 })();
