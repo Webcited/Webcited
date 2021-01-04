@@ -16,7 +16,7 @@ module.exports = (req, res) => {
   fs.access(`./download/zips/${requrl}.zip`, (err) => {
     // Check if zip of the requested site already exists, if it does send the existing one
     if (err) {
-      const child = exec(`cd download/sites && wget -mkEpnp ${requrl}`); // Download the site files to download/sites/example.com
+      const child = exec(`cd download/sites && wget -mkEpnpH ${requrl}`); // Download the site files to download/sites/example.com
       child.stderr.on("close", () => {
         const copy = exec(`cp ThankYou.pdf download/sites/${requrl}`);
         copy.stderr.on(
