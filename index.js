@@ -25,18 +25,6 @@ const reCaptchaConfig = {
 
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
-/**
- * Email configuration
- *
- */
-const mailOptions = {
-  host: "mail.webcited.co",
-  auth: {
-    user: "dev@webcited.co",
-    pass: "Teamwebcited",
-  },
-};
-
 fs.access("./download", (err) => {
   // Check if downloads folder exists
   if (err) {
@@ -54,13 +42,19 @@ app.use(morgan("combined"));
 
 app.post("/", urlencodedParser, (req, res) => {
   // HTTP POST at /
-  const url=new URL(req.body.SiteUrlToExport)
+  const url = new URL(req.body.SiteUrlToExport);
   req.body.SiteUrlToExport = url.hostname;
   res.setHeader(
     "Content-Disposition",
     `attachment; filename=${req.body.SiteUrlToExport}.zip`
   );
   scraper(req, res); // Call scraper function
+});
+
+app.get("/redirect", (req, res) => {
+  const { url } = req.query;
+  console.log(url);
+  res.redirect(url);
 });
 
 app.use((_, res) => res.status(404).sendFile(path.resolve("public/404.html")));

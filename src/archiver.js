@@ -1,14 +1,18 @@
 const archiver = require("archiver");
 const path = require("path");
 const fs = require("fs");
+const email = require("./email");
 
 /**
- * This function implements the archival 
- * @param {string} url 
- * @param {*} res 
+ * This function implements the archival
+ * @param {string} SiteUrlToExport
+ * @param {*} res
  */
-module.exports = (url, res) => {
-  var output = fs.createWriteStream(`./download/zips/${url}.zip`);
+module.exports = (req, res) => {
+  const { name, EMAIL, SiteUrlToExport } = req.body;
+  var output = fs.createWriteStream(
+    path.join(__dirname, `../download/zips/${SiteUrlToExport}.zip`)
+  );
   var archive = archiver("zip", {
     zlib: { level: 9 }, // Sets the compression level.
   });
@@ -18,7 +22,13 @@ module.exports = (url, res) => {
     console.log(
       "archiver has been finalized and the output file descriptor has closed."
     );
-    res.sendFile(path.resolve(`download/zips/${url}.zip`));
+    email(
+      name,
+      EMAIL,
+      `${SiteUrlToExport}.zip`,
+      path.join(__dirname, `../download/zips/${SiteUrlToExport}.zip`)
+    );
+    res.redirect("/thanks.html");
   });
 
   output.on("end", function () {
@@ -39,6 +49,10 @@ module.exports = (url, res) => {
 
   archive.pipe(output);
 
-  archive.directory(`./download/sites/${url}`, false);
+  archive.directory(
+    path.join(__dirname, `../download/sites/${SiteUrlToExport}`),
+    false
+  );
+  archive.file("ThankYou.pdf");
   archive.finalize();
 };
