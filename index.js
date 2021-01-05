@@ -60,7 +60,7 @@ app.get("/redirect", (req, res) => {
 app.get("/download/:file", (req, res) => {
   const { file } = req.params;
   fs.access(path.join(__dirname, `download/zips/${file}`), (err) => {
-    if (err) return res.sendStatus(404);
+    if (err) return res.status(404).sendFile(path.join(__dirname, "public/404.html"));
   });
   res.setHeader("Content-Disposition", `attachment; filename=${file}`);
   res.sendFile(path.join(__dirname, `download/zips/${file}`));
