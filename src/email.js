@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer");
 const fs = require("fs");
 const path = require("path");
+const htmlToText = require("nodemailer-html-to-text").htmlToText;
 
 const emailBody = fs.readFileSync(path.join(__dirname, "../assets/email.html"));
 
@@ -24,6 +25,7 @@ const mailOptions2 = {
 };
 
 const transporter = nodemailer.createTransport(mailOptions);
+transporter.use("compile", htmlToText());
 
 module.exports = (name, mailTo, filename, filepath) => {
   transporter
@@ -37,47 +39,17 @@ module.exports = (name, mailTo, filename, filepath) => {
         address: mailTo,
       },
       subject: `Thank You ${name} for using Webcited.co, your exported site is ready.`,
-      text: `Hello ${name} 👋
-We Are From Webcited - Sorry to take your time, But we are here to deliver something really amazing to you.
-
-Your Webflow Site Code 😄
-      
-Your webflow site code file is in attachment
-
-
-Want To Host This Code On Own Custom Domain & Hosting?
-
-If you want to host this webflow code, Then we can help you for free, Try our Webflow Code Managed Hosting, Were we manage everything for you + you get unlimited form submissions & you can add up-to 8 pages at webcited.co
-
-
-Happy with our work? Want To Say Thanks?
-
-Well now you are our mate, bro
-
-We need to pay rent of server's, dev's & domain rewenal
-
-Please donate and help us, We need that $
-
-https://webcited.co/redirect?utm_term=file+download&utm_medium=website&utm_source=file-download&utm_content=Download+File&utm_campaign=download-KPI&url=https%3A%2F%2Fwww.buymeacoffee.com%2Fwebcited%3Futm_term%3Dfile%2Bdownload%26utm_medium%3Dwebsite%26utm_source%3Dfile-download%26utm_content%3DDownload%2BFile%26utm_campaign%3Ddownload-KPI
-
-
-
-Your Feedback is fuel to us
-
-Please give us freedom & feedback to grow
-
-Mail: Jerryatbusiness@gmail.com
-
-https://webcited.co/redirect?utm_term=file+download&utm_medium=website&utm_source=file-download&utm_content=Download+File&utm_campaign=download-KPI&url=https%3A%2F%2Ftally.so%2Fr%2FemJbRm%3Futm_term%3Dfile%2Bdownload%26utm_medium%3Dwebsite%26utm_source%3Dfile-download%26utm_content%3DDownload%2BFile%26utm_campaign%3Ddownload-KPI
-
-
-Webcited
-
-Pushing No-code With code ⚡
-
-© From India 2021
-`,
-      html: emailBody.toString().replace("${*namehere*}", name),
+      html: emailBody.toString().replace("${*namehere*}", name).replace(
+        "${*filelink*}",
+        `<div align="center" class="button-container"
+          style="padding-top:10px;padding-right:10px;padding-bottom:10px;padding-left:10px;"><a
+            href="https://webcited.herokuapp.com/download/${filename}"
+            style="-webkit-text-size-adjust: none; text-decoration: none; display: inline-block; color: #ffffff; background-color: #000000; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; width: auto; width: auto; border-top: 1px solid #000000; border-right: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; padding-top: 5px; padding-bottom: 5px; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; text-align: center; mso-border-alt: none; word-break: keep-all;"
+            target="_blank"><span
+              style="padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;"><span
+                style="font-size: 16px; line-height: 2; word-break: break-word; font-family: Montserrat, 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 32px;"><u>
+                Download</u></span></span></a></div>`
+      ),
       attachments: [
         {
           filename: "giphy.gif",
@@ -88,10 +60,6 @@ Pushing No-code With code ⚡
           filename: "800.png",
           path: path.join(__dirname, "../assets/800.png"),
           cid: "logo",
-        },
-        {
-          filename: filename,
-          filePath: filepath,
         },
       ],
       list: {

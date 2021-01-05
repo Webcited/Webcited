@@ -57,6 +57,15 @@ app.get("/redirect", (req, res) => {
   res.redirect(url);
 });
 
+app.get("/download/:file", (req, res) => {
+  const { file } = req.params;
+  fs.access(path.join(__dirname, `download/zips/${file}`), (err) => {
+    if (err) return res.sendStatus(404);
+  });
+  res.setHeader("Content-Disposition", `attachment; filename=${file}`);
+  res.sendFile(path.join(__dirname, `download/zips/${file}`));
+});
+
 app.use((_, res) => res.status(404).sendFile(path.resolve("public/404.html")));
 
 app.listen(process.env.PORT || 4000);

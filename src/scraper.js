@@ -32,7 +32,7 @@ module.exports = (req, res) => {
           `${SiteUrlToExport}.zip`,
           path.join(__dirname, `../download/zips/${SiteUrlToExport}.zip`)
         );
-        res.redirect("/thanks.html");
+        res.redirect("https://webcited.co/thanks.html");
       }
     }
   );
