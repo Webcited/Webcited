@@ -19,7 +19,7 @@ module.exports = async (req) => {
     Name: name,
     Email: `=HYPERLINK("mailto:${EMAIL}","${EMAIL}")`,
     Website: SiteUrlToExport,
-    ExportedAt: "=NOW()",
+    ExportedAt: new Date().toLocaleString('en-GB'),
     Status: Status,
   });
 };
