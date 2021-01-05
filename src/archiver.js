@@ -22,13 +22,19 @@ module.exports = (req, res) => {
     console.log(
       "archiver has been finalized and the output file descriptor has closed."
     );
-    email(
-      name,
-      EMAIL,
-      `${SiteUrlToExport}.zip`,
-      path.join(__dirname, `../download/zips/${SiteUrlToExport}.zip`)
-    );
-    res.redirect("https://webcited.co/thanks.html");
+    if (req.isExt)
+      res.sendFile(
+        path.join(__dirname, `../download/zips/${SiteUrlToExport}.zip`)
+      );
+    else {
+      email(
+        name,
+        EMAIL,
+        `${SiteUrlToExport}.zip`,
+        path.join(__dirname, `../download/zips/${SiteUrlToExport}.zip`)
+      );
+      res.redirect("https://webcited.co/thanks.html");
+    }
   });
 
   output.on("end", function () {

@@ -26,6 +26,10 @@ module.exports = (req, res) => {
           archiver(req, res);
         });
       } else {
+        if (req.isExt)
+          return res.sendFile(
+            path.join(__dirname, `../download/zips/${SiteUrlToExport}.zip`)
+          );
         email(
           name,
           EMAIL,

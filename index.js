@@ -44,12 +44,19 @@ app.post("/", urlencodedParser, (req, res) => {
   // HTTP POST at /
   const url = new URL(req.body.SiteUrlToExport);
   req.body.SiteUrlToExport = url.hostname;
+  scraper(req, res); // Call scraper function
+});
+
+app.post("/ext", urlencodedParser, (req, res)=>{
+  const url = new URL(req.body.SiteUrlToExport);
+  req.body.SiteUrlToExport = url.hostname;
+  req.isExt=true;
   res.setHeader(
     "Content-Disposition",
     `attachment; filename=${req.body.SiteUrlToExport}.zip`
   );
   scraper(req, res); // Call scraper function
-});
+})
 
 app.get("/redirect", (req, res) => {
   const { url } = req.query;
@@ -65,6 +72,7 @@ app.get("/download/:file", (req, res) => {
   res.setHeader("Content-Disposition", `attachment; filename=${file}`);
   res.sendFile(path.join(__dirname, `download/zips/${file}`));
 });
+
 
 app.use((_, res) => res.status(404).sendFile(path.resolve("public/404.html")));
 
