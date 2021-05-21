@@ -31,7 +31,7 @@ module.exports = (name, mailTo, filename, filepath) => {
   transporter
     .sendMail({
       from: {
-        name: "Pravin K Singh from Webcited.co",
+        name: "Pravin M Singh - Webcited.co",
         address: "squad@webcited.co",
       },
       to: {
